@@ -3,11 +3,13 @@ reval_tech_old=script_files/reval_tech.html.old
 reval_tech=script_files/reval_tech.html
 hash_new=script_files/hash.new
 hash_old=script_files/hash.old
-rm -r $reval_tech*
+mkdir -p script_files/logs
 touch $reval_tech_old
 touch $reval_tech
 touch $hash_new
-touch $hash_new
+touch $hash_old
+
+echo $(md5sum script_files/reval_tech.html.old | cut -d ' ' -f 1)> $hash_old
 while read line;
 do
 hash_old_text=$line;
@@ -25,10 +27,13 @@ then
 	echo nothing changed as of now
 	exit
 else
+	/bin/bash ./mailchanges.sh
 	rm $hash_old
 	cp $hash_new $hash_old
+	rm $reval_tech_old 
+	cp $reval_tech $reval_tech_old
 	echo Starting Main Execution
 	echo .
 	echo .
-	./main.sh
+	/bin/bash ./main.sh
 fi
